@@ -14,7 +14,7 @@ Each of the top 3 ideas is scored across 4 factors: Expected Impact, Statistical
 
 **Phase 3: Experiment Plan**
 
-Once you've picked your experiment, the skill writes the full plan. It follows the Atlassian experiment brief structure covering hypothesis, success metric, guardrail metrics, and variant descriptions. It calculates sample size using the Optimizely calculator method (n ≈ 16 × p(1−p) / δ²) and translates that into weeks of runtime based on your weekly traffic. It recommends a statistical method — Sequential, T-test, or Bayesian — with a specific justification for your situation, not just a generic definition. And it outputs a copy-paste ready Amplitude Experiment setup block covering Name, Target URL, Key, Hypothesis and Background, Pages, Metrics, Targeting and Rollout, and Advanced Stats Preferences including CUPED, Bonferroni correction, Statistical Method, and Confidence Level.
+Once you've picked your experiment, the skill writes the full plan. It follows the [Atlassian experiment brief](https://www.atlassian.com/team-playbook/plays/experiment) structure covering hypothesis, success metric, guardrail metrics, and variant descriptions. It calculates sample size using the [Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method (n ≈ 16 × p(1−p) / δ²) and translates that into weeks of runtime based on your weekly traffic. It recommends a statistical method — Sequential, T-test, or Bayesian — with a specific justification for your situation, not just a generic definition. And it outputs a copy-paste ready Amplitude Experiment setup block covering Name, Target URL, Key, Hypothesis and Background, Pages, Metrics, Targeting and Rollout, and Advanced Stats Preferences including CUPED, Bonferroni correction, Statistical Method, and Confidence Level.
 
 ## Install
 
@@ -68,8 +68,8 @@ Growth PMs who use Amplitude Experiment for A/B testing and want to run rigorous
 
 - **[Akash Gupta's 10×10 Vibe Experimentation Matrix](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)**: 100 named experiment ideas across 10 journey stages and 10 behavioral triggers, used here as a structured idea generation tool
 - **4-factor prioritization**: Expected Impact, Statistical Power Required, Brand/UX Risk, Learning Value — each scored and explained, not just listed
-- **Atlassian Experiment Plan template**: hypothesis, primary metric, guardrail metrics, variant descriptions, all in one structured brief
-- **Optimizely sample size calculator method**: n ≈ 16 × p(1−p) / δ², with runtime calculated in weeks based on your actual traffic
+- **[Atlassian Experiment Plan template](https://www.atlassian.com/team-playbook/plays/experiment)**: hypothesis, primary metric, guardrail metrics, variant descriptions, all in one structured brief
+- **[Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method**: n ≈ 16 × p(1−p) / δ², with runtime calculated in weeks based on your actual traffic
 
 ## Requirements
 
