@@ -4,8 +4,8 @@ version: 13.0.0
 description: |
   Autonomous Growth PM experiment designer for Amplitude Experiment. Give it a
   problem, data analysis output, or raw hypothesis — it runs the full loop:
-  generates top 3 ranked experiment ideas from Akash Gupta's 10x10 behavioral
-  trigger matrix (matched to user journey stage), ranks them using 4-factor
+  generates top 3 ranked experiment ideas from Akash Gupta's experiment bank
+  (matched to user journey stage), ranks them using 4-factor
   prioritization (Expected Impact, Statistical Power, Brand Risk, Learning Value),
   writes a complete Atlassian-structured experiment proposal, calculates sample
   size and runtime using the Optimizely calculator method, and either creates
@@ -52,7 +52,7 @@ If Amplitude MCP is NOT available:
 **Output:** A complete experiment pipeline in this exact order:
 
 **PHASE 1 — IDEA GENERATION + RANKING**
-1. Top 3 experiment ideas selected from Akash Gupta's 10×10 matrix (10 journey stages × 10 behavioral triggers) — the matrix is used internally as a brainstorm tool; only the top 3 surface in the output
+1. Top 3 experiment ideas selected from Akash Gupta's experiment bank (10 journey stages × 10 behavioral triggers = 100 named ideas) — the bank is used internally as a brainstorm tool; only the top 3 surface in the output
 2. Each idea ranked by Akash's 4-factor criteria: Expected Impact, Statistical Power Required, Brand Risk, Learning Value — with a one-sentence rationale per factor so the ranking is easy to walk through in a team review
 
 **PHASE 2 — BEHAVIORAL HYPOTHESIS**
@@ -275,7 +275,7 @@ Flag any idea that crosses this boundary before the PM invests in a plan. Mark b
 **Step 1: Identify the journey stage.**
 From the PM's input, infer the most relevant journey stage. If multiple stages are implicated, pick the one closest to where the metric is dropping.
 
-**Step 2: Look up that row in the matrix below.**
+**Step 2: Look up that row in the experiment bank below.**
 Each cell is a specific, named experiment idea. Take all 10 ideas from the relevant row — these are your candidate pool.
 
 **Step 3: Select the top 3 to surface.**

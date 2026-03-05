@@ -1,6 +1,6 @@
 # growth-experiment
 
-A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funnel leak, a feature that's not converting — and it generates ranked experiment ideas using [Akash Gupta's 10×10 vibe experimentation framework](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search), then produces a complete, statistically sound A/B experiment brief ready to launch in Amplitude Experiment.
+A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funnel leak, a feature that's not converting — and it generates ranked experiment ideas using [Akash Gupta's experiment bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search), then produces a complete, statistically sound A/B experiment brief ready to launch in Amplitude Experiment.
 
 ## What it does
 
@@ -76,7 +76,7 @@ The skill asks 3 upfront questions (platform, weekly traffic, any context), then
 
 **Output:**
 - Journey stage: Onboarding / First Use
-- Top 3 ideas from the matrix row: Interactive Product Tour, Progress Milestone Celebrations, Quick Win Activation Prompt
+- Top 3 ideas from the experiment bank: Interactive Product Tour, Progress Milestone Celebrations, Quick Win Activation Prompt
 - 4-factor ranking with rationale per factor, #1 is Interactive Product Tour
 - Full experiment brief with hypothesis and guardrail metrics
 - Sample size: ~2,800 per variant, 1.6 weeks at 3,500 signups/week
@@ -89,7 +89,7 @@ Growth PMs who use Amplitude Experiment for A/B testing and want to run rigorous
 
 ## Frameworks inside
 
-- **[Akash Gupta's 10×10 Vibe Experimentation Matrix](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)**: 100 named experiment ideas across 10 journey stages and 10 behavioral triggers, used here as a structured idea generation tool
+- **[Akash Gupta's experiment bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)**: 100 named experiment ideas across 10 journey stages and 10 behavioral triggers, used here as a structured idea generation tool
 - **4-factor prioritization**: Expected Impact, Statistical Power Required, Brand/UX Risk, Learning Value — each scored and explained, not just listed
 - **[Atlassian Experiment Plan template](https://www.atlassian.com/team-playbook/plays/experiment)**: hypothesis, primary metric, guardrail metrics, variant descriptions, all in one structured brief
 - **[Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method**: n ≈ 16 × p(1−p) / δ², with runtime calculated in weeks based on your actual traffic
@@ -133,7 +133,7 @@ Or install via the Amplitude MCP Marketplace:
 
 ## Attribution
 
-Experiment idea generation is powered by **[Akash Gupta's Vibe Experimentation framework](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)** — a 10×10 behavioral trigger matrix mapping 10 user journey stages to 10 psychological triggers, producing 100 named experiment ideas. The framework is used here as a structured brainstorm tool. Credit belongs to Akash Gupta.
+Experiment idea generation is powered by **[Akash Gupta's experiment bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)** — 100 named experiment ideas mapped across 10 user journey stages and 10 behavioral triggers. Used here as a structured brainstorm tool. Credit belongs to Akash Gupta.
 
 ## License
 
