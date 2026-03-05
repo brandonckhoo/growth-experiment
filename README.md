@@ -12,9 +12,13 @@ Most experiment backlogs start from gut feel or Slack threads. This skill starts
 
 Each of the top 3 ideas is scored across 4 factors: Expected Impact, Statistical Power Required, Brand/UX Risk, and Learning Value. Every factor gets a High/Med/Low rating and a one-sentence rationale explaining the reasoning. The result is a ranked shortlist that's easy to walk through in a team review, with the tradeoffs already spelled out rather than left as assumptions.
 
-**Phase 3: Experiment Plan**
+**Phase 3: Experiment Proposal**
 
-Once you've picked your experiment, the skill writes the full plan. It follows the [Atlassian experiment brief](https://www.atlassian.com/team-playbook/plays/experiment) structure covering hypothesis, success metric, guardrail metrics, and variant descriptions. It calculates sample size using the [Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method (n ≈ 16 × p(1−p) / δ²) and translates that into weeks of runtime based on your weekly traffic. It recommends a statistical method — Sequential, T-test, or Bayesian — with a specific justification for your situation, not just a generic definition. And it outputs a copy-paste ready Amplitude Experiment setup block covering Name, Target URL, Key, Hypothesis and Background, Pages, Metrics, Targeting and Rollout, and Advanced Stats Preferences including CUPED, Bonferroni correction, Statistical Method, and Confidence Level.
+Once you've picked your experiment, the skill writes the full proposal. It follows the [Atlassian experiment brief](https://www.atlassian.com/team-playbook/plays/experiment) structure covering hypothesis, success metric, guardrail metrics, and variant descriptions. It calculates sample size using the [Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method (n ≈ 16 × p(1−p) / δ²) and translates that into weeks of runtime based on your weekly traffic. It recommends a statistical method — Sequential, T-test, or Bayesian — with a specific justification for your situation, not just a generic definition. And it outputs a copy-paste ready Amplitude Experiment setup block covering Name, Target URL, Key, Hypothesis and Background, Pages, Metrics, Targeting and Rollout, and Advanced Stats Preferences including CUPED, Bonferroni correction, Statistical Method, and Confidence Level.
+
+**Phase 4: Approval and Launch**
+
+After the proposal is output, the skill pauses and asks for sign-off before doing anything in Amplitude. Once you approve, it calls `create_experiment` via the Amplitude MCP to create the experiment in draft state — no manual UI work required. You review it in Amplitude and click Launch when ready. If the MCP is not connected, this step outputs the setup block for you to copy in manually instead.
 
 ## Install
 
