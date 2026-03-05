@@ -833,15 +833,21 @@ After creation, confirm:
 Experiment created in Amplitude.
 Name: [name]
 Key:  [key]
-URL:  [experiment URL if returned]
 
-Next steps:
-  1. Open the experiment in Amplitude and verify all fields look correct
+Open it here and click Launch when ready:
+→ [experiment URL returned by create_experiment]
+
+Before you launch:
+  1. Verify all fields look correct in the experiment settings
   2. Use the Visual Editor to set up variant styling if needed
   3. Run internal QA (flag on for internal users only)
-  4. Canary at 5% for 48h, then ramp to full rollout
-  5. Click Launch in the Amplitude UI when ready — MCP creates but does not launch
+  4. Start rollout at 5% for 48h to catch any instrumentation issues, then ramp
 ```
+
+If `create_experiment` does not return a URL, construct it as:
+`https://app.amplitude.com/experiment/[org-slug]/experiments/[experiment-id]`
+and surface it the same way. If neither is available, link directly to the experiments list:
+`https://app.amplitude.com/experiment` with the instruction to find the experiment by name.
 
 **On approval — if Amplitude MCP is NOT connected:**
 
