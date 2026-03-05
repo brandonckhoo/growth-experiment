@@ -14,20 +14,26 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 - Every factor gets a High/Med/Low rating with a one-sentence rationale
 - Outputs a ranked shortlist with tradeoffs already spelled out, ready to walk through in a team review
 
-**Phase 3: Vibe Code the Variant**
+**Phase 3: Behavioral Hypothesis**
+- Writes a single, precise behavioral hypothesis for the #1 idea before any code is generated
+- Uses Akash's formula: specific user segment + specific behavioral change + specific mechanism + psychological reasoning
+- Turns a vague intuition into a testable claim that anchors the variant, the proposal, and the success metrics
+
+**Phase 4: Vibe Code the Variant**
 - Reads your codebase and design system (Figma tokens, component library, existing patterns) to understand how your product is built
 - Generates the variant code using your actual components, colors, and typography — not a generic prototype
 - Outputs the implementation behind a feature flag, ready to drop into the existing page
 - Follows Akash's Stack 2: vibe code connected to your repo, then experiment
 
-**Phase 4: Experiment Proposal**
+**Phase 5: Experiment Proposal**
 - Writes a full [Atlassian-structured experiment brief](https://www.atlassian.com/team-playbook/plays/experiment): hypothesis, success metric, guardrail metrics, and variant descriptions that reference the code you just built
 - Calculates sample size using the [Optimizely calculator method](https://www.optimizely.com/sample-size-calculator/) and converts it into weeks of runtime based on your traffic
 - Recommends a statistical method (Sequential, T-test, or Bayesian) with a specific justification for your experiment, not a generic definition
 - Outputs a complete Amplitude Experiment setup block: Name, Target URL, Key, Hypothesis, Pages, Metrics, Targeting, CUPED, Bonferroni, Statistical Method, Confidence Level
 
-**Phase 5: Approval and Launch**
+**Phase 6: Approval and Launch**
 - Pauses and asks you to review the proposal and variant code before touching Amplitude
+- Prompts you to run the 5-party launch-readiness review: Designers (design system compliance), Engineers (performance/scalability), Compliance (legal/privacy), Data Scientists (stats validity), Leadership (business risk sign-off)
 - On your approval: calls `create_experiment` via the Amplitude MCP, no manual UI work needed
 - Surfaces the direct experiment URL so you can open it and click Launch in one step
 - If MCP is not connected: outputs the setup block for you to copy in manually instead

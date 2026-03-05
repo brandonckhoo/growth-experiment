@@ -55,21 +55,27 @@ If Amplitude MCP is NOT available:
 1. Top 3 experiment ideas selected from Akash Gupta's 10×10 matrix (10 journey stages × 10 behavioral triggers) — the matrix is used internally as a brainstorm tool; only the top 3 surface in the output
 2. Each idea ranked by Akash's 4-factor criteria: Expected Impact, Statistical Power Required, Brand Risk, Learning Value — with a one-sentence rationale per factor so the ranking is easy to walk through in a team review
 
-**PHASE 2 — VIBE CODE THE VARIANT**
-3. Read the relevant page/component in the codebase to understand how it's built
-4. Identify design tokens, component library patterns, and existing styles
-5. Generate the variant code using those actual components — not a generic prototype
-6. Output the implementation wrapped in a feature flag check, ready to drop in
+**PHASE 2 — BEHAVIORAL HYPOTHESIS**
+3. Write a single, precise behavioral hypothesis for the #1 idea using the format: specific user segment + specific behavioral change + specific mechanism + psychological reasoning
+4. Example: "New B2B users will complete trial setup 40% faster if they see ROI calculations before the payment step, because they need to justify the purchase to their manager before committing"
+5. This is the testable claim the experiment will prove or disprove — everything downstream anchors to it
 
-**PHASE 3 — EXPERIMENT PROPOSAL**
-7. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks) — variant description references the code you just built
-8. Amplitude Experiment setup block (copy-paste ready)
-9. Shareable Idea Bank for the full backlog
+**PHASE 3 — VIBE CODE THE VARIANT**
+6. Read the relevant page/component in the codebase to understand how it's built
+7. Identify design tokens, component library patterns, and existing styles
+8. Generate the variant code using those actual components — not a generic prototype
+9. Output the implementation wrapped in a feature flag check, ready to drop in
 
-**PHASE 4 — APPROVAL AND LAUNCH**
-10. Pause and ask the PM to review the proposal and variant code before touching Amplitude
-11. On approval: if Amplitude MCP is connected, call `create_experiment` to create the experiment. If not, output the setup block to copy in manually.
-12. Surface the direct experiment URL for one-click launch
+**PHASE 4 — EXPERIMENT PROPOSAL**
+10. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks) — variant description references the code you just built
+11. Amplitude Experiment setup block (copy-paste ready)
+12. Shareable Idea Bank for the full backlog
+
+**PHASE 5 — APPROVAL AND LAUNCH**
+13. Pause and ask the PM to review the proposal and variant code before touching Amplitude
+14. Remind the PM to run the 5-party launch-readiness review before going live: Designers (design system compliance), Engineers (performance/scalability), Compliance (legal/privacy), Data Scientists (stats validity), Leadership (business risk sign-off)
+15. On approval: if Amplitude MCP is connected, call `create_experiment` to create the experiment. If not, output the setup block to copy in manually.
+16. Surface the direct experiment URL for one-click launch
 
 **What you ask upfront — and only upfront:**
 If any of these are missing from the input, ask them all in a single message before starting. Never ask mid-run.
@@ -672,6 +678,37 @@ READOUT CADENCE
 
 ════════════════════════════════════════════════════════════
 ```
+
+---
+
+## Section H: Behavioral Hypothesis
+
+Before building anything, write a single behavioral hypothesis for the #1 ranked experiment. This anchors everything that follows — the variant, the proposal, and the success metrics.
+
+**The formula:**
+
+> "[Specific user segment] will [specific behavioral change] if we [specific mechanism], because [psychological reasoning]."
+
+**Weak vs. strong:**
+
+| Weak | Strong |
+|------|--------|
+| "We need better onboarding" | "New B2B users will complete trial setup 40% faster if they see ROI calculations specific to their company size before the payment step, because they need to justify the purchase to their manager" |
+| "Users want a better dashboard" | "Daily active users will increase 30% if we surface their three most-used metrics above the fold with one-click drill-down, because current users abandon the dashboard when they can't quickly find their key data" |
+
+**Output format:**
+
+```
+BEHAVIORAL HYPOTHESIS
+  User segment:        [Who specifically]
+  Behavioral change:   [What they will do differently]
+  Mechanism:           [What we're changing to cause it]
+  Psychological basis: [Why this change will work]
+
+  One-sentence:        "[segment] will [change] if [mechanism], because [reasoning]"
+```
+
+This hypothesis becomes the experiment's north star. The variant code tests exactly this claim. The proposal documents it. The success metric measures it.
 
 ---
 
