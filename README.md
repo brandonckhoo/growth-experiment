@@ -21,7 +21,7 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 - Turns a vague intuition into a testable claim that anchors the variant, the proposal, and the success metrics
 
 **Phase 4: Vibe Code the #1 Idea — 3 Design Concepts**
-- Reads your codebase and design system (Figma tokens, component library, existing patterns) to understand how your product is built
+- Gets your design system context — from Figma MCP if connected, or by reading your codebase token files directly; for web it can also read your live site URL; for iOS it reads Swift color assets and SwiftUI views; for Android it reads `colors.xml` and Kotlin composables
 - Proposes 3 distinct design directions for the #1 idea — each tests the same behavioral hypothesis through a different implementation approach
 - You pick one, then the skill generates the full variant code using your actual components, colors, and typography — not a generic prototype
 - Outputs the implementation behind a feature flag, ready to drop into the existing page

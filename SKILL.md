@@ -721,118 +721,141 @@ Generate the full Atlassian-structured document below.
 
 ### B1. Experiment Header
 
+Output this table exactly, filled in with real values:
+
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ EXPERIMENT PLAN                                                  │
-├──────────────────────┬──────────────────────────────────────────┤
-│ Experiment name      │ [Short, descriptive name]                │
-│ Flag key             │ [kebab-case-flag-key]                    │
-│ Owner                │ [PM name]                                │
-│ Reviewers            │ [Eng lead, data analyst, design]         │
-│ Approvers            │ [Head of Product / whoever signs off]    │
-│ Status               │ Draft → In Review → Approved → Live →   │
-│                      │ Complete → Shipped / Reverted            │
-│ Platform             │ [Web | iOS | Android | All]              │
-│ Target launch date   │ [Date]                                   │
-│ Planned end date     │ [Date]                                   │
-└──────────────────────┴──────────────────────────────────────────┘
+EXPERIMENT PLAN AND RESULTS
+
+  Experiment owner:   [PM name — @mention]
+  Reviewers:          [Eng lead — @mention] | [Data analyst — @mention] | [Designer — @mention]
+  Approver:           [Head of Product or equivalent — @mention]
+  Amplitude link:     [Will be populated after experiment is created in Phase 6]
+  Jira ticket(s):     [Link to eng ticket if known, otherwise leave blank]
 ```
 
 ---
 
 ### B2. Planning Section
 
-#### Overview
+Output each section below in full, with all placeholders replaced by real values derived from the PM's input, the behavioral hypothesis from Section H, and any Amplitude data pulled in Section I0.
+
+#### Stakeholder Summary
 
 ```
-[2-4 sentences explaining the problem, why it matters, and what we're testing.
-Write this so any stakeholder can understand without context.]
+[Leave this blank — it is filled in after the experiment concludes with a 1-2 sentence
+summary of what happened and what decision was made.]
 ```
 
-#### Hypothesis
+#### Experiment Planning
 
-Use Atlassian's exact format:
-
-```
-We believe that [specific change to the product]
-will help [target user segment] to [achieve this outcome]
-because [the behavioral or psychological reason].
-
-We will know we have succeeded when [primary metric] [increases/decreases]
-by [X%] within [experiment duration].
-```
-
-#### Metrics and Targets
+**Overview**
 
 ```
-PRIMARY METRIC
-  Metric:          [The single metric that determines win/loss]
-  Current baseline: [X% or X units — pull from Amplitude]
-  Target (MDE):    [Minimum improvement worth shipping, e.g., +10% relative]
-  Chart type:      [Trend | Funnel | Retention | Lifecycle]
-
-SECONDARY METRICS (informational)
-  [Metric 1]:      [What direction we expect, and why we're watching it]
-  [Metric 2]:      [Same]
-
-GUARDRAIL METRICS (must not degrade)
-  [Metric 1]:      [e.g., "Support ticket volume must not increase >5%"]
-  [Metric 2]:      [e.g., "Page load time must not regress"]
-
-COUNTER-METRICS (watch for harm)
-  [Metric]:        [e.g., "Revenue per user — ensure we're not trading LTV for activation"]
+What type of experiment:  [Web/Client Side A/B | Server Side | Feature Flag | Multivariate]
+What user problem is being solved:
+  [2-3 sentences. Describe the drop, friction point, or opportunity observed.
+  Write so any stakeholder can understand without prior context.]
 ```
 
-#### Variations
+**Hypothesis**
+
+Use Optimizely's exact format from the template:
 
 ```
-CONTROL (A) — what exists today
-  [Describe the current experience precisely. Be specific about what the user sees,
-  what the UI looks like, and what events fire. Attach a screenshot if possible.]
-
-TEST (B) — what changes
-  [Describe exactly what is different. Only describe the delta from control.
-  "Test looks identical to control except: [X]"]
-
-[TEST (C) — only if testing a meaningfully different approach]
-  [Justify why a third variant is needed. Each variant halves your power.]
+We hypothesize that [specific UI or experience change]
+will increase / decrease [primary metric]
+because [it solves this customer pain or creates this psychological effect].
 ```
 
-#### Statistical Parameters
+**Metrics**
 
 ```
-Minimum Detectable Effect (MDE):  [X% relative improvement]
-  Rationale: [Why is this the right threshold? What's the business case for shipping
-  anything smaller?]
+PRIMARY METRIC:    [The single event or conversion rate that determines win/loss]
+                   Baseline: [X% — from Amplitude, last 30 days]
+                   MDE:      [minimum % lift worth shipping — justify the threshold]
 
-Baseline conversion rate:          [X% — pulled from Amplitude, date range: ...]
-
-Required sample size per variant:
-  Using: 95% confidence, 80% power, two-tailed test
-  Formula shorthand:
-    n ≈ 16σ²/δ² (for means)
-    n ≈ (Z_α/2 + Z_β)² × [p₁(1-p₁) + p₂(1-p₂)] / (p₁ - p₂)²
-    Where: Z_α/2 = 1.96, Z_β = 0.84
-
-  Result: [N] users per variant ([N × 2] total)
-
-Daily eligible users:               [N] (from Amplitude, date range: ...)
-Rollout:                            [X%] of eligible users
-
-Estimated runtime:
-  Days = (N per variant × 2) / (daily eligible × rollout %)
-  Result: [N] days + 20% buffer = [N] days
-  Runtime check: [Pass / Flag — if >30 days, reconsider MDE or widen rollout]
-  Minimum runtime: 14 days (capture full week cycle × 2)
+SECONDARY METRIC:  [Supporting metric that helps explain the primary result]
+SECONDARY METRIC:  [Guardrail — must not degrade, e.g., page load time, support tickets]
 ```
 
-#### Baseline Data and Notes
+**Targeting**
 
 ```
-[Include any relevant context: recent experiments on the same surface, known
-confounders, upcoming marketing campaigns, seasonal effects, dependency on
-other flags. This is the "notes" field from the Atlassian template — use it
-to capture anything that affects interpretation.]
+Where will this experiment run?   [e.g., /onboarding/step-2, Pricing page, iOS checkout flow]
+Who will see it?                   [e.g., new users in first 7 days, paid plan users, all users]
+Traffic allocation:                [e.g., 50% of eligible users split evenly between A and B]
+```
+
+**Variations**
+
+```
+                    A: Control              B: Variation
+Screenshot:         [current experience]    [variant built in Phase 4]
+% of visitors:      50%                     50%
+Description:        [What exists today —    [What changes — describe only the delta.
+                    describe exactly what    "Identical to control except: [X]"]
+                    the user sees]
+```
+
+**Pre-analysis**
+
+```
+Baseline conversion rate:    [X% from Amplitude — date range: last 30 days]
+Sample size per variant:     [N users] — calculated using Optimizely Sample Size Calculator
+                             (optimizely.com/sample-size-calculator/?conversion=3&effect=20&significance=95)
+                             Inputs: baseline=[X%], MDE=[X%], significance=95%, power=80%
+Weekly eligible users:       [N] (from Amplitude)
+Estimated runtime:           [N] weeks ([N] days) to reach required sample size
+Minimum runtime:             2 weeks (capture full weekly cycle twice)
+```
+
+**Notes**
+
+```
+[Any gotchas, bugs, process gaps, or known confounders to flag for the team:
+- Recent experiments on the same surface
+- Upcoming marketing campaigns or launches that could affect results
+- Known technical constraints or dependency on other flags
+- Anything that affects interpretation of results]
+```
+
+---
+
+#### Results
+
+*Fill this in after the experiment ends.*
+
+```
+Experiment start:             [Date]
+Experiment end:               [Date]
+Link to results in Amplitude: [URL]
+Conclusion:                   INCONCLUSIVE / HYPOTHESIS PROVED / HYPOTHESIS DISPROVED
+
+                    A: Control    B: Variation    Change
+Cohort size:        [N]           [N]
+Primary metric:     [X%]          [X%]            Δ= [+/- X%]
+                                                  p-value= [X]
+                                                  power= [X]
+                                                  confidence= [X%]
+```
+
+---
+
+#### Conclusions
+
+*Fill this in alongside results.*
+
+```
+HIGHLIGHTS
+  Primary goal:   [Metric] [increased/decreased] [directionally/significantly] by [x%]
+  Other goals:    [Metric] [increased/decreased] [directionally/significantly] by [x%]
+
+TAKEAWAYS
+  - [Key learning from this experiment — what did we learn about user behavior?]
+  - [Any surprising or unexpected findings?]
+
+FOLLOW-UP
+  - [Next steps: roll out to 100%? Iterate? Kill it? Run a follow-up experiment?]
 ```
 
 ---
@@ -841,14 +864,37 @@ to capture anything that affects interpretation.]
 
 Vibe code the variant before writing the experiment proposal. This is Phase 2 of the pipeline: build the experiment using your actual codebase and design system first, so the proposal can reference what was actually built rather than describing an abstraction. This follows Akash Gupta's vibe experimentation Stack 2 workflow.
 
-**Step 1: Read the relevant file(s)**
+**Step 1: Get design context**
 
-Use Glob and Read to find and open the component or page being tested. Look for:
-- The component file that renders the surface being tested (e.g., `PricingPage.tsx`, `OnboardingStep.tsx`)
-- The design token file (e.g., `tokens.css`, `tailwind.config.js`, `theme.ts`)
-- Any existing component library imports used on that page
+The variant must look native to the product. How you get design context depends on the PM's setup:
 
-Do not assume the stack. Read the actual files to confirm the framework (React, Vue, Next.js, etc.), styling approach (Tailwind, CSS modules, styled-components), and component patterns in use.
+**Option A — Figma MCP connected (best)**
+Use the Figma MCP to read design tokens and component specs directly from the design file. Ask the PM for the Figma file URL or frame link, then pull colors, typography, spacing, and component names from it.
+
+**Option B — Web, no Figma MCP**
+Use Glob and Read to find design token files in the codebase:
+- `tokens.css`, `variables.scss`, `tailwind.config.js`, `theme.ts`, `colors.ts`
+- A representative component file (e.g., `Button.tsx`, `Card.tsx`) to see what classes/props exist
+- The specific page or component being tested (e.g., `PricingPage.tsx`, `OnboardingStep.tsx`)
+
+If no codebase access: ask the PM for their website URL, then use WebFetch to read the live page and extract CSS custom properties, class names, and component patterns from the rendered HTML.
+
+**Option C — iOS**
+Use Glob and Read to find:
+- Color definitions: `Colors.xcassets`, a `UIColor+Brand.swift` or `Color+Extensions.swift` extension, or a `Constants.swift` with color literals
+- A representative SwiftUI view or UIViewController to understand layout patterns, SF Symbol usage, and component conventions
+- There is no live URL to fetch — read the source files directly
+
+**Option D — Android**
+Use Glob and Read to find:
+- `res/values/colors.xml` and `res/values/styles.xml` or `res/values/themes.xml`
+- A representative Kotlin composable or layout XML file to understand Material component usage
+- There is no live URL to fetch — read the source files directly
+
+**If none of the above is available:**
+Ask: "To vibe code a native-looking variant, I need your design system. Can you share one of the following: your Figma file URL, your website URL, or the path to your design token file or a representative component in your codebase?"
+
+Do not generate generic code. The variant must use your actual colors, components, and patterns — not placeholder UI.
 
 **Step 2: Propose 3 design concepts**
 
