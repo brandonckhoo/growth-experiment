@@ -5,8 +5,8 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 ## What it does
 
 **Phase 1: Idea Generation**
-- Reads your problem and identifies which of the 10 user journey stages is affected (Awareness, Onboarding, First Use, Activation, Habit Formation, Monetization, Retention, Referral, Re-engagement, or Expansion)
-- Cross-references that stage against 10 behavioral triggers — Social Proof, Urgency, Loss Aversion, Reciprocity, Curiosity, Commitment, Authority, Personalization, Progress, and Reward — to pull relevant experiment ideas from [Akash Gupta's idea bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search). For example: Awareness stage + Social Proof trigger surfaces ideas like showing customer logos, live user counts, or press mentions
+- Reads your problem and identifies which of the 10 user journey stages is affected — Awareness/Discovery, Landing/First Impression, Onboarding/Setup, Feature Discovery, Activation/Engagement, Habit Formation, Expansion/Upsell, Retention/Loyalty, Referral/Advocacy, or Reactivation
+- Looks up that row in [Akash Gupta's 100-idea experiment bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search) — 10 named experiment ideas per stage, each mapped to a behavioral trigger: Social Proof, Scarcity/Urgency, Anchoring, Loss Aversion, Progress/Achievement, Authority/Trust, Personalization, Simplification, Reciprocity, or Identity. For example: Awareness/Discovery + Social Proof = Customer Logo Testimonial Wall
 - Surfaces the top 3 ideas most relevant to your context, frontend-ready and feasible to ship fast
 
 **Phase 2: Prioritization**
