@@ -77,11 +77,36 @@ Growth PMs who use Amplitude Experiment for A/B testing and want to run rigorous
 - Amplitude Experiment account with experiments enabled
 - A problem to solve
 
+## Amplitude MCP integration
+
+If you have the [Amplitude MCP server](https://amplitude.com/mcp-server) connected to Claude Code, the skill upgrades automatically:
+
+**Without MCP (default):** Outputs a copy-paste setup block for the Amplitude Experiment UI. You manually fill in the fields and click Create.
+
+**With MCP connected:** The skill uses `query_dataset` to pull your baseline conversion rate from Amplitude directly, then calls `create_experiment` to create the experiment in Amplitude without you touching the UI. You still need to click Launch in Amplitude — the MCP creates but does not launch.
+
+To connect the Amplitude MCP, add it to your Claude Code settings:
+
+```json
+{
+  "mcpServers": {
+    "amplitude": {
+      "url": "https://mcp-server.prod.us-west-2.amplitude.com/v1/mcp"
+    }
+  }
+}
+```
+
+Or install via the Amplitude MCP Marketplace:
+```
+/plugin install amplitude@amplitude
+```
+
 ## What it doesn't do
 
-- Won't query your analytics data directly (no MCP integration). You'll need to pull your baseline conversion rate from Amplitude before running the skill.
-- Won't calculate exact sample sizes without a baseline rate. If you don't have one, it will prompt you to estimate.
+- Won't calculate exact sample sizes without a baseline rate. If MCP is not connected and you don't have one, it will prompt you to pull it from Amplitude first.
 - Doesn't replace a statistician for multi-variant or interaction-effect experiments at scale. For anything beyond a standard 2-variant A/B test, treat the output as a starting point.
+- MCP creates the experiment in draft state — launching it still requires a human click in the Amplitude UI.
 
 ## Attribution
 

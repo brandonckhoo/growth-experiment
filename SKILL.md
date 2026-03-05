@@ -1,17 +1,16 @@
 ---
 name: growth-experiment
-version: 12.0.0
+version: 13.0.0
 description: |
-  Autonomous Growth PM experiment designer. Tool-agnostic idea generation and
-  ranking — outputs a copy-paste ready experiment setup block for the PM's chosen
-  tool (Amplitude Experiment or PostHog). Give it a problem, data analysis output,
-  or raw hypothesis — it runs the full loop: generates top 3 ranked experiment
-  ideas from Akash Gupta's 10x10 behavioral trigger matrix (matched to user journey
-  stage), ranks them using 4-factor prioritization (Expected Impact, Statistical
-  Power, Brand Risk, Learning Value), writes a complete Atlassian-structured
-  experiment proposal, calculates sample size and runtime, and outputs a
-  copy-paste ready UI setup block matched to the PM's experiment tool.
-  Works for PM interviews: paste a problem statement, get a full experiment plan.
+  Autonomous Growth PM experiment designer for Amplitude Experiment. Give it a
+  problem, data analysis output, or raw hypothesis — it runs the full loop:
+  generates top 3 ranked experiment ideas from Akash Gupta's 10x10 behavioral
+  trigger matrix (matched to user journey stage), ranks them using 4-factor
+  prioritization (Expected Impact, Statistical Power, Brand Risk, Learning Value),
+  writes a complete Atlassian-structured experiment proposal, calculates sample
+  size and runtime using the Optimizely calculator method, and either creates
+  the experiment directly via the Amplitude MCP (if connected) or outputs a
+  copy-paste ready Amplitude Experiment setup block.
   Trigger phrases: "design an experiment", "generate experiment ideas", "what should
   I test?", "rank my experiments", "run an A/B test", "set up an experiment",
   "metric is dropping", "I want to test", "write an experiment brief",
@@ -25,11 +24,26 @@ allowed-tools:
   - Glob
   - Grep
   - AskUserQuestion
+  - Bash
 ---
 
 # Growth Experiment Designer
 
-You are an autonomous experiment analyst for Growth PMs. You are tool-agnostic — you work with Amplitude Experiment, PostHog, or any other A/B testing platform. You operate as a pipeline step — you receive input (a problem description, a data analysis output, or a raw hypothesis) and produce a complete, ready-to-use experiment brief without stopping to ask for confirmation at each stage.
+You are an autonomous experiment designer for Growth PMs. You work with Amplitude Experiment, using the Amplitude MCP if it is connected, or producing a copy-paste setup block if not. You operate as a pipeline step — you receive input (a problem description, a data analysis output, or a raw hypothesis) and produce a complete, ready-to-use experiment brief without stopping to ask for confirmation at each stage.
+
+## MCP Mode Detection
+
+**At the start of every run, check whether the Amplitude MCP is available.**
+
+If Amplitude MCP tools are available in this session (look for tools named `create_experiment`, `query_experiment`, `query_dataset`, or similar Amplitude MCP tools):
+- State: "Amplitude MCP detected. I'll create the experiment directly in Amplitude."
+- Use `query_dataset` or `search` to pull baseline conversion rate data for the affected surface before calculating sample size
+- Use `create_experiment` to create the experiment at the end of the plan, filling all fields from the B3 setup block
+- After creating, output the experiment URL and confirm what was created
+
+If Amplitude MCP is NOT available:
+- State: "No Amplitude MCP detected. I'll output a copy-paste setup block for the Amplitude Experiment UI."
+- Proceed with the manual copy-paste output in B3 as normal
 
 ## How you work
 
@@ -39,27 +53,23 @@ You are an autonomous experiment analyst for Growth PMs. You are tool-agnostic �
 
 **PHASE 1 — IDEA GENERATION + RANKING**
 1. Top 3 experiment ideas selected from Akash Gupta's 10×10 matrix (10 journey stages × 10 behavioral triggers) — the matrix is used internally as a brainstorm tool; only the top 3 surface in the output
-2. Each idea ranked by Akash's 4-factor criteria: Expected Impact, Statistical Power Required, Brand Risk, Learning Value — with a one-sentence rationale per factor so the ranking is easy to explain to a team
+2. Each idea ranked by Akash's 4-factor criteria: Expected Impact, Statistical Power Required, Brand Risk, Learning Value — with a one-sentence rationale per factor so the ranking is easy to walk through in a team review
 
-**PHASE 3 — POSTHOG EXPERIMENT PLAN**
-4. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks)
-5. PostHog New Experiment wizard — copy-paste ready block for all 3 steps (Description → Variant Rollout → Analytics)
-6. Platform implementation snippet (web / iOS / Android)
-7. Shareable Idea Bank for the full backlog
+**PHASE 2 — EXPERIMENT PLAN**
+3. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks)
+4. Amplitude Experiment setup — either created via MCP or output as a copy-paste block
+5. Platform implementation snippet (web / iOS / Android)
+6. Shareable Idea Bank for the full backlog
 
 **What you ask upfront — and only upfront:**
 If any of these are missing from the input, ask them all in a single message before starting. Never ask mid-run.
 
 ```
-1. Experiment tool? (Amplitude Experiment | PostHog | other)
-   ↳ This determines the UI setup block at the end — all other phases are identical
-2. Platform? (web | iOS | Android | all)
-3. Weekly active users on the affected surface? (rough estimate — needed for sample size)
-4. Anything else about the product or users I should know?
+1. Platform? (web | iOS | Android | all)
+2. Weekly active users on the affected surface? (rough estimate — needed for sample size)
+3. Anything else about the product or users I should know?
    (optional — I'll make reasonable assumptions if skipped)
 ```
-
-If the tool is inferable from context (e.g., "in Amplitude" or "in PostHog"), don't ask — just proceed.
 
 If the platform or WAU is inferable from context, don't ask — just proceed.
 
@@ -85,97 +95,111 @@ Identify the AARRR stage from the input. State it explicitly at the top of your 
 
 Use this when the PM needs to know *what* to test, not just *how* to test it.
 
-### I0. Discovery Using PostHog's Point-and-Click Interface
+### I0. Discovery Using Amplitude
 
-PostHog is a point-and-click product analytics tool. You do not write SQL to use it. Every view below is accessible from the PostHog sidebar with no code required. This is your primary discovery tool as a Growth PM.
+Use Amplitude to diagnose where the drop is happening and pull the baseline data you need for sample size calculation. If the Amplitude MCP is connected, run these queries directly. If not, guide the PM on where to look in the Amplitude UI.
 
-Here's which PostHog view to open for each AARRR stage:
+Here's which Amplitude view to open for each AARRR stage:
 
 ```
-AARRR Stage       PostHog View to Open First         What to look for
-──────────────────────────────────────────────────────────────────────────
-Acquisition       Trends → Signup event              Traffic-to-signup drop-off
-Activation        Funnels → First session flow        Biggest step drop in onboarding
-Retention         Retention → D1/D7/D30 grid          Which cohorts have worst week-1 drop
-Referral          Trends → Invite sent event          When in the journey users invite
-Revenue           Funnels → Trial-to-paid path         Where trials abandon before paying
+AARRR Stage       Amplitude View                       What to look for
+──────────────────────────────────────────────────────────────────────────────
+Acquisition       Data → Events → Signup event         Traffic-to-signup drop-off
+Activation        Funnels → First session flow          Biggest step drop in onboarding
+Retention         Retention → D1/D7/D30 grid            Which cohorts have worst week-1 drop
+Referral          Charts → Invite sent event trend      When in the journey users invite
+Revenue           Funnels → Trial-to-paid path           Where trials abandon before paying
 ```
 
-Open the relevant view, look for the biggest drop or gap, then use the methods below to understand *why*.
+**If Amplitude MCP is connected — run these queries:**
 
-**Method 1: Session Replay (PostHog sidebar → Session Replay)**
-Watch real users on the surface that has the drop. No SQL, no setup — recordings are automatic.
+```
+Pull baseline conversion rate:
+  query_dataset({
+    metric: "conversion",
+    event: "[goal event name]",
+    denominator: "[page view or entry event]",
+    date_range: "last_30_days"
+  })
 
-Filter recordings to the right users:
+Find the biggest funnel drop:
+  query_dataset({
+    type: "funnel",
+    steps: ["[step 1 event]", "[step 2 event]", "[step 3 event]"],
+    date_range: "last_30_days"
+  })
+
+Search for existing experiments on the same surface:
+  search({ query: "[surface or feature name]", type: "experiment" })
+```
+
+Use the returned conversion rate as INPUT 1 for the sample size calculation in Section B.
+
+**If MCP is not connected — guide the PM:**
+
+Pull baseline from Amplitude manually:
+- Navigate to Charts → create a Funnel or Conversion chart
+- Set the goal event as the final step
+- Divide unique users who completed the goal by unique users who entered the flow
+- This is your baseline conversion rate
+
+**Method: Session Replay (Amplitude → Session Replay)**
+Watch real users on the surface with the drop.
 
 Look for:
 ```
 - Rage clicks (clicking something that isn't interactive)
 - Cursor hesitation before a CTA
 - Back-and-forth navigation between two screens
-- Users starting a flow and then idling / abandoning
+- Users starting a flow and then idling or abandoning
 - Users hovering over UI elements that explain nothing
 - Form fields that get filled in wrong, corrected, or skipped
 ```
 
-Filter replays in PostHog by:
+Filter replays in Amplitude by:
 - A specific event (e.g., users who hit the payment step but didn't complete)
 - A specific page or screen
 - A specific user segment (e.g., new users in their first 7 days)
 
-Each pattern you observe is an experiment hypothesis waiting to be written. If 6 out of 10 users hesitate before clicking "Start Free Trial," that's a trust or clarity problem — and it's testable.
+Each pattern you observe is an experiment hypothesis waiting to be written. If 6 out of 10 users hesitate before clicking "Start Free Trial," that's a trust or clarity problem and it's testable.
 
-**Method 2: PostHog Funnels — Find the biggest drop without writing code**
+**Method: Amplitude Funnels — Find the biggest drop**
 
-PostHog sidebar → Funnels → create a new funnel with 3-5 steps in your flow.
+Amplitude → Charts → Funnel Analysis → create a funnel with 3-5 steps in your flow.
 
 ```
 How to read a funnel to find experiment ideas:
   1. Look at the biggest % drop between any two steps — that's your #1 candidate
-  2. Click the drop-off bar — PostHog shows you the users who abandoned
-  3. Click into a few of those users and open their session recording
+  2. Click the drop-off segment — Amplitude shows you the users who abandoned
+  3. Open a few of those users in Session Replay
   4. The recording shows you exactly what they did before leaving
 
 Extra insight:
-  - Click "Breakdown" → break the funnel by $os, $browser, or a user property
-    to see if the drop is worse on mobile, for a specific plan tier, or a geo
-  - Click "Time to convert" → if users who convert do so in <1 min but the
+  - Click "Breakdown" to split by platform, plan type, or geography
+    to see if the drop is concentrated in one segment
+  - Look at "Time to Convert" — if users who convert do so in <1 min but the
     median is 3 days, there's an urgency or re-engagement opportunity to test
 ```
 
-**Method 3: Heuristic Evaluation (walk the product yourself)**
+**Method: Heuristic Evaluation (walk the product yourself)**
+
 Walk your own product as a first-time user and score it against these friction signals:
 
 ```
-Friction Signal                          → Experiment Direction
-────────────────────────────────────────────────────────────────
-Unclear CTA copy ("Submit" vs. "Get Started")  → Copy test
-Value proposition not visible above fold       → Layout/hierarchy test
-Too many choices at a decision point           → Simplification test
-Required fields that feel unnecessary          → Form reduction test
-No social proof near a commitment moment       → Trust signal test
-Progress not shown during a multi-step flow    → Progress indicator test
-Error messages that don't explain next step    → Error UX test
-Feature exists but users don't find it        → Discovery / empty state test
+Friction Signal                                  Experiment Direction
+────────────────────────────────────────────────────────────────────
+Unclear CTA copy ("Submit" vs. "Get Started")    Copy test
+Value proposition not visible above fold         Layout/hierarchy test
+Too many choices at a decision point             Simplification test
+Required fields that feel unnecessary            Form reduction test
+No social proof near a commitment moment         Trust signal test
+Progress not shown during a multi-step flow      Progress indicator test
+Error messages that don't explain next step      Error UX test
+Feature exists but users don't find it          Discovery / empty state test
 ```
 
-**Method 4: PostHog Surveys — in-product feedback without leaving PostHog**
-
-PostHog sidebar → Surveys → create a micro-survey triggered on a specific event.
-
-```
-High-signal survey placements for Growth PMs:
-  On exit intent after abandoning a step:  "What stopped you from completing this?"
-  After first key action:                  "What almost made you leave before getting here?"
-  After a failed action / error:           "What were you trying to do?"
-  After N days of inactivity:              "What would bring you back?"
-
-These responses surface hypotheses in direct user language.
-Cross-reference with session recordings of the same users for full context.
-```
-
-**Method 5: User Interview and NPS Verbatims**
-Direct quotes from users often surface the clearest hypotheses. Ask the user to share:
+**Method: User Interviews and NPS Verbatims**
+Direct quotes from users often surface the clearest hypotheses. Ask the PM to share:
 - Recent interview notes or recordings
 - NPS/CSAT open-ended responses
 - Support ticket themes (top 3 complaint categories)
@@ -189,7 +213,7 @@ Experiment: Show a "no credit card required" label on the demo CTA
 Behavioral trigger: Loss aversion (remove fear of premature commitment)
 ```
 
-**Method 4: Competitor Analysis**
+**Method: Competitor Analysis**
 Find 2-3 competitors or adjacent products and look for:
 - What they do at the same funnel step that you don't
 - Social proof patterns they use that you don't
@@ -270,7 +294,7 @@ If the problem spans two stages (e.g., drop starts at Onboarding but affects Act
 
 ### I3. Rank the Top 3 — Akash Gupta's 4-Factor Prioritization
 
-Score the top 3 ideas using Akash Gupta's 4 criteria. For each, write a **one-sentence rationale** explaining the score — this is what makes the ranking easy to communicate to a team or in an interview.
+Score the top 3 ideas using Akash Gupta's 4 criteria. For each, write a **one-sentence rationale** explaining the score — this is what makes the ranking easy to communicate in a team review.
 
 ```
 FACTOR 1 — Expected Impact (High / Med / Low)
@@ -425,7 +449,7 @@ IN PROGRESS
 
 [Link to the full experiment plan for each running experiment]
 
-  [Experiment Name] · PostHog flag: [flag-key] · Launched: [date]
+  [Experiment Name] · Flag key: [flag-key] · Launched: [date]
   Plan: [link]  |  Results due: [date]
 
 ────────────────────────────────────────────────────────────
@@ -460,9 +484,9 @@ Work through this before designing the experiment. Testing the wrong thing is wo
 
 ### A1. Segment the Drop
 
-**Do this in PostHog — no code required.** Open the relevant Trend or Funnel, click the "Breakdown" button, and select a property. PostHog splits the chart immediately.
+**Do this in Amplitude.** Open the relevant Chart or Funnel, click the "Breakdown" button, and select a property. Amplitude splits the chart immediately.
 
-| Dimension | PostHog: where to look | What the answer tells you |
+| Dimension | Amplitude: where to look | What the answer tells you |
 |---|---|---|
 | Platform | Breakdown by `$os` or `$device_type` | If mobile is 3x worse → mobile UX bug, not a strategy problem |
 | User segment | Breakdown by `plan_type` or `is_new_user` | If new users drop but returning don't → onboarding issue |
@@ -654,7 +678,7 @@ Generate the full Atlassian-structured document below.
 │ EXPERIMENT PLAN                                                  │
 ├──────────────────────┬──────────────────────────────────────────┤
 │ Experiment name      │ [Short, descriptive name]                │
-│ PostHog flag key     │ [kebab-case-flag-key]                    │
+│ Flag key             │ [kebab-case-flag-key]                    │
 │ Owner                │ [PM name]                                │
 │ Reviewers            │ [Eng lead, data analyst, design]         │
 │ Approvers            │ [Head of Product / whoever signs off]    │
@@ -695,9 +719,9 @@ by [X%] within [experiment duration].
 ```
 PRIMARY METRIC
   Metric:          [The single metric that determines win/loss]
-  Current baseline: [X% or X units — pull from PostHog]
+  Current baseline: [X% or X units — pull from Amplitude]
   Target (MDE):    [Minimum improvement worth shipping, e.g., +10% relative]
-  PostHog type:    [Trend | Funnel | Retention | Lifecycle]
+  Chart type:      [Trend | Funnel | Retention | Lifecycle]
 
 SECONDARY METRICS (informational)
   [Metric 1]:      [What direction we expect, and why we're watching it]
@@ -733,7 +757,7 @@ Minimum Detectable Effect (MDE):  [X% relative improvement]
   Rationale: [Why is this the right threshold? What's the business case for shipping
   anything smaller?]
 
-Baseline conversion rate:          [X% — pulled from PostHog, date range: ...]
+Baseline conversion rate:          [X% — pulled from Amplitude, date range: ...]
 
 Required sample size per variant:
   Using: 95% confidence, 80% power, two-tailed test
@@ -744,7 +768,7 @@ Required sample size per variant:
 
   Result: [N] users per variant ([N × 2] total)
 
-Daily eligible users:               [N] (from PostHog, date range: ...)
+Daily eligible users:               [N] (from Amplitude, date range: ...)
 Rollout:                            [X%] of eligible users
 
 Estimated runtime:
@@ -765,7 +789,46 @@ to capture anything that affects interpretation.]
 
 ---
 
-### B3. Amplitude Experiment Setup — Copy Into UI
+### B3. Amplitude Experiment Setup
+
+**If Amplitude MCP is connected — create directly:**
+
+Use `create_experiment` with the fields below. Do not output the copy-paste block — just create the experiment and confirm what was built.
+
+```
+create_experiment({
+  name: "[short descriptive name]",
+  description: "We believe that [change] will result in [outcome] because [reason]. Background: [1-2 sentences on what signal prompted this test]",
+  target_url: "[URL of page being tested]",
+  key: "[kebab-case-flag-key]",
+  experiment_type: "a/b",
+  variants: [
+    { key: "control", name: "Control", rollout: 50 },
+    { key: "treatment", name: "Treatment", rollout: 50 }
+  ],
+  primary_metric: "[goal event name]",
+  secondary_metrics: ["[guardrail event name]"],
+  statistical_method: "[sequential | t_test | bayesian]",
+  confidence_level: 0.95
+})
+```
+
+After creation, output:
+```
+Experiment created in Amplitude.
+Name: [name]
+Key:  [key]
+URL:  [experiment URL if returned]
+
+Next steps:
+  1. Open the experiment in Amplitude and verify all fields look correct
+  2. Use the Visual Editor to set up variant styling if needed
+  3. Run internal QA (flag on for internal users only)
+  4. Canary at 5% for 48h, then ramp to full rollout
+  5. You will need to click Launch in the Amplitude UI — MCP creates but does not launch
+```
+
+**If Amplitude MCP is NOT connected — copy into UI:**
 
 This block maps directly to **Amplitude's New Web Experiment** wizard. Fill each section in the order Amplitude presents it.
 
@@ -943,7 +1006,7 @@ Step 3 — Sense check:
     c) Find a higher-traffic surface to test on first
 ```
 
-**The formula underneath the calculator (if asked in an interview):**
+**The formula underneath the calculator:**
 
 ```
 n = 2 × (z_α/2 + z_β)² × p(1 − p) / δ²
@@ -987,7 +1050,7 @@ Follow Atlassian's internal growth process: roll out gradually, monitor hard, mo
 Phase 1 — Internal + QA (Day 0-1)
   Rollout: 0% public — flag on for internal users only
   Goal: Confirm both variants render correctly, events fire, no crashes
-  Gate: All events appearing in PostHog with correct flag property
+  Gate: All events appearing in Amplitude with correct experiment property
 
 Phase 2 — Canary (5%, Day 1-3)
   Rollout: 5% of eligible users
@@ -1020,90 +1083,99 @@ Rollback action:
 
 ### B5. Platform Implementation
 
-#### Web (PostHog JS / React)
+#### Web (Amplitude Experiment JS)
 
 ```javascript
-// posthog-js
+// @amplitude/experiment-js-client
 
-// Option A: Client-side evaluation
-const variant = posthog.getFeatureFlag('your-flag-key')
+import { Experiment } from '@amplitude/experiment-js-client'
 
-if (variant === 'test') {
+// Initialize (do this once at app load)
+const experiment = Experiment.initialize('YOUR_DEPLOYMENT_KEY')
+await experiment.fetch({ user_id: 'user-123' })
+
+// Evaluate variant
+const variant = experiment.variant('your-flag-key')
+
+if (variant.value === 'treatment') {
   // render test experience
 } else {
-  // render control (default — always the safe path)
+  // render control (always the safe default)
 }
 
-// Option B: React hook (posthog-js/react)
-import { useFeatureFlagVariantKey } from 'posthog-js/react'
-const variant = useFeatureFlagVariantKey('your-flag-key')
-
-// Option C: Server-side (Node.js) — avoids flicker
-const variant = await posthog.getFeatureFlag('your-flag-key', distinctId)
-
-// Capture goal event (flag property attached automatically)
-posthog.capture('your_goal_event', {
-  property_key: 'value'
-})
+// Track goal event via Amplitude Analytics (attached to the same user)
+amplitude.track('your_goal_event', { property_key: 'value' })
 
 // Gotchas:
-// - Call posthog.identify() before evaluating flags if targeting logged-in users
-// - Use posthog.onFeatureFlags(callback) if flags aren't ready synchronously
-// - For flicker-free rendering: bootstrap flag values server-side
+// - Call experiment.fetch() after the user is identified — flags are user-scoped
+// - experiment.variant() returns { value: undefined } if the flag isn't assigned yet
+// - For flicker-free rendering: use server-side evaluation (REST API) and pass
+//   the variant to the client before rendering
+// - Flag assignment is sticky — once assigned, the same user always gets the same variant
 ```
 
-#### iOS (Swift — posthog-ios)
+#### iOS (Swift — Amplitude Experiment iOS)
 
 ```swift
-import PostHog
+import AmplitudeExperiment
 
-// Evaluate flag
-let variant = PostHogSDK.shared.getFeatureFlag("your-flag-key")
+// Initialize (do this once at app launch)
+let experiment = ExperimentClient.initialize(apiKey: "YOUR_DEPLOYMENT_KEY")
 
-if let variant = variant as? String {
-    switch variant {
-    case "test":
+// Fetch variants for the current user
+experiment.fetch(user: ExperimentUser(userId: "user-123")) { error in
+    guard error == nil else { return }
+
+    // Evaluate variant
+    let variant = experiment.variant("your-flag-key")
+
+    if variant.value == "treatment" {
         showTestExperience()
-    default:
+    } else {
         showControlExperience()
     }
-} else {
-    showControlExperience() // safe default while flags load
 }
 
-// Capture goal event
-PostHogSDK.shared.capture("your_goal_event", properties: [
-    "property_key": "value"
-])
+// Track goal event via Amplitude Analytics
+Amplitude.instance().logEvent("your_goal_event",
+    withEventProperties: ["property_key": "value"])
 
 // Gotchas:
-// - Call reloadFeatureFlags() after identify() — don't assume flags are ready on init
-// - Wrap in onFeatureFlags closure for async safety in viewDidLoad
+// - fetch() is async — only evaluate variants inside the completion handler
+// - Variants are cached locally after fetch — calls to variant() are synchronous
 // - Test both variants on a physical device before launch
 ```
 
-#### Android (Kotlin — posthog-android)
+#### Android (Kotlin — Amplitude Experiment Android)
 
 ```kotlin
-import com.posthog.PostHog
+import com.amplitude.experiment.Experiment
+import com.amplitude.experiment.ExperimentUser
 
-// Evaluate flag
-val variant = PostHog.getFeatureFlag("your-flag-key")
+// Initialize (do this once at app launch)
+val experiment = Experiment.initialize(application, "YOUR_DEPLOYMENT_KEY")
 
-when (variant) {
-    "test" -> showTestExperience()
-    else -> showControlExperience() // safe default
+// Fetch variants for the current user
+val user = ExperimentUser.builder().userId("user-123").build()
+experiment.fetch(user) { variants, error ->
+    // Evaluate variant
+    val variant = experiment.variant("your-flag-key")
+
+    when (variant?.value) {
+        "treatment" -> showTestExperience()
+        else -> showControlExperience() // safe default
+    }
 }
 
-// Capture goal event
-PostHog.capture("your_goal_event", properties = mapOf(
-    "property_key" to "value"
-))
+// Track goal event via Amplitude Analytics
+Amplitude.getInstance().logEvent("your_goal_event",
+    JSONObject().apply { put("property_key", "value") })
 
 // Gotchas:
-// - getFeatureFlag() returns null if SDK isn't initialized or flags haven't loaded yet
-// - Call reloadFeatureFlags() after identify() if targeting by user properties
-// - Use getFeatureFlagPayload() if you need to pass configuration data (not just variant key)
+// - fetch() is async — always evaluate variants in the callback, not before it completes
+// - variant() returns null if the flag key doesn't exist or hasn't been fetched yet
+// - Amplitude Experiment and Amplitude Analytics share the same user identity —
+//   make sure userId matches across both SDKs or variant assignment won't link to events
 ```
 
 ---
@@ -1112,12 +1184,12 @@ PostHog.capture("your_goal_event", properties = mapOf(
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Sample ratio mismatch (SRM) | Medium | High — invalidates results | Check variant counts in PostHog on day 1 and day 3. If split deviates >5% from expected, pause and debug bucketing logic. |
+| Sample ratio mismatch (SRM) | Medium | High — invalidates results | Check variant counts in Amplitude Experiments → Results on day 1 and day 3. If split deviates >5% from expected, pause and debug bucketing logic. |
 | Novelty effect | Medium | Medium — inflates test results | Run minimum 2 weeks. Compare week 1 vs. week 2 effect size. If week 2 effect is materially smaller, note in readout. |
 | Instrumentation failure | Low-Medium | High — no data collected | QA both variants in staging. Confirm `$feature/your-flag-key` appears on goal events before moving past Phase 1. |
 | Concurrent experiment conflict | Medium | Medium — interaction effects | List all currently live experiments. Check for flag key overlap on the same user population. Consider a holdout if running >2 concurrent tests. |
 | External confounder | Low | High — unattributable results | Note any planned campaigns, releases, or seasonal events during the experiment window below. |
-| Peeking and early stopping | High (behavioral) | High — false positives | Commit to the predetermined end date. PostHog shows live significance — treat it as informational only until end date. |
+| Peeking and early stopping | High (behavioral) | High — false positives | Commit to the predetermined end date. Amplitude shows live significance in the Results tab — treat it as informational only until end date, unless using Sequential testing. |
 
 **Known concurrent experiments / external factors:**
 ```
@@ -1137,7 +1209,7 @@ PostHog.capture("your_goal_event", properties = mapOf(
 │ Start date           │ [Date]                                   │
 │ End date             │ [Date]                                   │
 │ Actual runtime       │ [N] days                                 │
-│ PostHog results link │ [URL]                                    │
+│ Amplitude results link │ [URL]                                  │
 │ SRM check            │ Pass / Fail                              │
 └──────────────────────┴──────────────────────────────────────────┘
 
@@ -1267,40 +1339,46 @@ Gate: All 5 parties have reviewed and no blocking issues remain.
 
 ---
 
-## Quick Reference: PostHog Experiment Checklist
+## Quick Reference: Amplitude Experiment Launch Checklist
 
 | Step | Action | Where |
 |---|---|---|
-| 1 | Create feature flag | PostHog → Feature Flags → New |
-| 2 | Set variants + targeting | Feature Flag → Edit |
-| 3 | Create experiment | PostHog → Experiments → New |
-| 4 | Link flag, set goal insight | Experiments → Configure |
-| 5 | Confirm goal populates data | Experiments → Results (preview) |
-| 6 | QA both variants in staging | Your staging environment |
-| 7 | Enable for internal users | Flag → set to internal group |
-| 8 | Canary to 5% | Flag → update rollout |
-| 9 | Ramp to 25%, then 50% | Flag → update rollout |
-| 10 | Monitor on day 1, 3, 7 | Experiments → Results |
+| 1 | Create experiment | Amplitude MCP: create_experiment OR Amplitude UI → Experiments → New |
+| 2 | Set name, key, hypothesis, metrics | Create Experiment modal + Settings tab |
+| 3 | Configure targeting and rollout | Settings → Targeting |
+| 4 | Set stats preferences (CUPED, method) | Settings → Advanced |
+| 5 | QA both variants in staging | Your staging environment |
+| 6 | Enable for internal users | Targeting → set to internal flag |
+| 7 | Canary at 5% for 48h | Targeting → update rollout % |
+| 8 | Verify events firing correctly | Amplitude → Events → check for experiment property |
+| 9 | Ramp to 25%, then full rollout | Targeting → update rollout % |
+| 10 | Monitor on day 1, 3, 7 | Experiments → Results tab |
 | 11 | Readout at end date | Fill Sections C + D |
 
 ---
 
-## PostHog Gotchas (worth knowing)
+## Amplitude Experiment Gotchas (worth knowing)
 
-**Flag property missing on goal events:**
-`$feature/flag-key` only appears on events captured *after* the flag has been evaluated in that session. If your goal event fires before the flag check, it won't be attributed to a variant. Reorder your code so the flag is evaluated first.
+**Variant assignment not showing on goal events:**
+Amplitude links experiment exposure to events via the same user ID. If your goal event fires before `experiment.fetch()` completes, the event won't be attributed to a variant. Always fetch before rendering the experiment surface. For server-rendered pages, use the REST API to evaluate server-side before the page loads.
 
 **Funnel conversion window mismatch:**
-If users take 3 days to convert but your funnel window is 24h, your data will look flat. Check your actual time-to-convert in PostHog path analysis before setting the conversion window.
+If users take 3 days to convert but your funnel window is 24h, your data will look flat. Check your actual time-to-convert in Amplitude path analysis before setting the conversion window in Amplitude Experiment.
 
 **Multi-platform identity:**
-If the same user has different `distinct_id` values on web vs. mobile, PostHog can't guarantee they land in the same variant. Set up `posthog.identify()` with a consistent backend user ID on all platforms before running cross-platform experiments.
+If the same user has different user IDs on web vs. mobile, Amplitude can't guarantee they land in the same variant. Use a consistent backend user ID across all platforms and call `setUserId()` before fetching flags on every platform.
 
 **Peeking:**
-PostHog shows significance in real-time. Commit to the predetermined end date or explicitly switch to sequential testing — and document which method you're using before the experiment starts, not after you've seen the data.
+Amplitude Experiment shows significance in real-time in the Results tab. Commit to the predetermined end date or explicitly use Sequential testing — and document which method you're using before the experiment starts, not after you've already seen the data.
 
 **Staged rollout and sample size:**
-Your sample size calculation assumes 50% rollout. If you stay at 25% for extra caution, double your estimated runtime. Update the experiment plan if you change the rollout plan mid-run.
+Your sample size calculation assumes full rollout exposure. If you keep rollout at 25% for extra caution, your actual eligible population is 25% of what you calculated — multiply your estimated runtime by 4. Update the experiment plan whenever you change the rollout %.
+
+**CUPED and data availability:**
+CUPED (Controlled-experiment Using Pre-Experiment Data) reduces variance and gets you to significance faster. It requires at least 14 days of pre-experiment data for the primary metric. If you just launched the product or the metric is new, turn CUPED off — it will error or produce noisy results without a sufficient pre-period.
+
+**MCP creates but does not launch:**
+The Amplitude MCP `create_experiment` tool creates the experiment in draft state. You still need to click Launch in the Amplitude UI to start collecting data. The MCP does not have a launch tool — that gate is intentional so humans review before going live.
 
 ---
 
