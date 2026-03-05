@@ -55,16 +55,16 @@ If Amplitude MCP is NOT available:
 1. Top 3 experiment ideas selected from Akash Gupta's 10×10 matrix (10 journey stages × 10 behavioral triggers) — the matrix is used internally as a brainstorm tool; only the top 3 surface in the output
 2. Each idea ranked by Akash's 4-factor criteria: Expected Impact, Statistical Power Required, Brand Risk, Learning Value — with a one-sentence rationale per factor so the ranking is easy to walk through in a team review
 
-**PHASE 2 — EXPERIMENT PROPOSAL**
-3. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks)
-4. Amplitude Experiment setup block (copy-paste ready)
-5. Shareable Idea Bank for the full backlog
+**PHASE 2 — VIBE CODE THE VARIANT**
+3. Read the relevant page/component in the codebase to understand how it's built
+4. Identify design tokens, component library patterns, and existing styles
+5. Generate the variant code using those actual components — not a generic prototype
+6. Output the implementation wrapped in a feature flag check, ready to drop in
 
-**PHASE 3 — VIBE CODE THE VARIANT**
-6. Read the relevant page/component in the codebase to understand how it's built
-7. Identify design tokens, component library patterns, and existing styles
-8. Generate the variant code using those actual components — not a generic prototype
-9. Output the implementation wrapped in a feature flag check, ready to drop in
+**PHASE 3 — EXPERIMENT PROPOSAL**
+7. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks) — variant description references the code you just built
+8. Amplitude Experiment setup block (copy-paste ready)
+9. Shareable Idea Bank for the full backlog
 
 **PHASE 4 — APPROVAL AND LAUNCH**
 10. Pause and ask the PM to review the proposal and variant code before touching Amplitude
@@ -801,7 +801,7 @@ to capture anything that affects interpretation.]
 
 ### B3.5. Vibe Code the Variant
 
-After outputting the setup block, vibe code the variant before asking for approval. This is Phase 3 of Akash Gupta's vibe experimentation workflow: build the experiment using your actual codebase and design system, not a generic prototype.
+Vibe code the variant before writing the experiment proposal. This is Phase 2 of the pipeline: build the experiment using your actual codebase and design system first, so the proposal can reference what was actually built rather than describing an abstraction. This follows Akash Gupta's vibe experimentation Stack 2 workflow.
 
 **Step 1: Read the relevant file(s)**
 
@@ -829,7 +829,7 @@ Use these exact tokens and components in the variant. The experiment must look n
 
 Write the variant implementation. Follow these rules:
 
-1. **Wrap in a feature flag check** using the Amplitude Experiment flag key from B3:
+1. **Wrap in a feature flag check** using a descriptive flag key based on the experiment name (e.g., `exp-interactive-product-tour`). The exact key will be confirmed in the setup block that follows:
 ```tsx
 // Web (Amplitude Experiment JS)
 const variant = experiment.variant('[flag-key]')
@@ -850,7 +850,7 @@ After the code, output:
 ```
 IMPLEMENTATION NOTES
   File to modify:    [path/to/component.tsx]
-  Flag key:          [from B3 setup block]
+  Flag key:          [proposed key — confirmed in setup block]
   Control:           [description of current state — no change needed]
   Variant:           [description of what changes]
   Events to verify:  [list goal event + any new events that need tracking]
