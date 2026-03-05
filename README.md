@@ -17,7 +17,7 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 
 **Phase 3: Behavioral Hypothesis**
 - Writes a single, precise behavioral hypothesis for the #1 idea before any code is generated
-- Uses Akash's formula: specific user segment + specific behavioral change + specific mechanism + psychological reasoning
+- Uses the formula: *who* will do *what differently* if we *change this specific thing*, because *of this psychological reason* — for example, "New B2B users will complete trial setup 40% faster if they see ROI calculations before the payment step, because they need to justify the purchase to their manager"
 - Turns a vague intuition into a testable claim that anchors the variant, the proposal, and the success metrics
 
 **Phase 4: Vibe Code the #1 Idea — 3 Design Concepts**
