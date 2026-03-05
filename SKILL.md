@@ -25,6 +25,7 @@ allowed-tools:
   - Grep
   - AskUserQuestion
   - Bash
+  - WebFetch
 ---
 
 # Growth Experiment Designer
@@ -57,12 +58,18 @@ If Amplitude MCP is NOT available:
 **PHASE 2 — EXPERIMENT PROPOSAL**
 3. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks)
 4. Amplitude Experiment setup block (copy-paste ready)
-5. Platform implementation snippet (web / iOS / Android)
-6. Shareable Idea Bank for the full backlog
+5. Shareable Idea Bank for the full backlog
 
-**PHASE 3 — APPROVAL AND LAUNCH**
-7. Pause and ask the PM to review and approve the proposal
-8. On approval: if Amplitude MCP is connected, call `create_experiment` to create the experiment in Amplitude. If not, remind the PM to copy the setup block into the UI manually.
+**PHASE 3 — VIBE CODE THE VARIANT**
+6. Read the relevant page/component in the codebase to understand how it's built
+7. Identify design tokens, component library patterns, and existing styles
+8. Generate the variant code using those actual components — not a generic prototype
+9. Output the implementation wrapped in a feature flag check, ready to drop in
+
+**PHASE 4 — APPROVAL AND LAUNCH**
+10. Pause and ask the PM to review the proposal and variant code before touching Amplitude
+11. On approval: if Amplitude MCP is connected, call `create_experiment` to create the experiment. If not, output the setup block to copy in manually.
+12. Surface the direct experiment URL for one-click launch
 
 **What you ask upfront — and only upfront:**
 If any of these are missing from the input, ask them all in a single message before starting. Never ask mid-run.
@@ -789,6 +796,72 @@ confounders, upcoming marketing campaigns, seasonal effects, dependency on
 other flags. This is the "notes" field from the Atlassian template — use it
 to capture anything that affects interpretation.]
 ```
+
+---
+
+### B3.5. Vibe Code the Variant
+
+After outputting the setup block, vibe code the variant before asking for approval. This is Phase 3 of Akash Gupta's vibe experimentation workflow: build the experiment using your actual codebase and design system, not a generic prototype.
+
+**Step 1: Read the relevant file(s)**
+
+Use Glob and Read to find and open the component or page being tested. Look for:
+- The component file that renders the surface being tested (e.g., `PricingPage.tsx`, `OnboardingStep.tsx`)
+- The design token file (e.g., `tokens.css`, `tailwind.config.js`, `theme.ts`)
+- Any existing component library imports used on that page
+
+Do not assume the stack. Read the actual files to confirm the framework (React, Vue, Next.js, etc.), styling approach (Tailwind, CSS modules, styled-components), and component patterns in use.
+
+**Step 2: Understand the design system**
+
+Before writing any code, identify:
+```
+Framework:      [React / Vue / Next.js / etc.]
+Styling:        [Tailwind / CSS modules / styled-components / etc.]
+Color tokens:   [e.g., --color-primary, bg-blue-600, theme.colors.brand]
+Typography:     [e.g., font-heading, text-lg font-semibold]
+Key components: [Button, Card, Badge, Modal — whatever exists in the codebase]
+```
+
+Use these exact tokens and components in the variant. The experiment must look native to the product, not like a prototype.
+
+**Step 3: Generate the variant code**
+
+Write the variant implementation. Follow these rules:
+
+1. **Wrap in a feature flag check** using the Amplitude Experiment flag key from B3:
+```tsx
+// Web (Amplitude Experiment JS)
+const variant = experiment.variant('[flag-key]')
+const isVariant = variant.value === 'treatment'
+
+return isVariant ? <VariantComponent /> : <ControlComponent />
+```
+
+2. **Only change what the experiment tests.** Do not refactor surrounding code. The diff between control and variant should be minimal and surgical.
+
+3. **Use existing components.** If there's a `<Button>` component, use it. If there are design tokens, use them. Do not introduce new CSS classes or inline styles unless the design system doesn't cover the case.
+
+4. **Output the full modified file** (or the relevant section with clear comments showing where it fits) so the PM or engineer can drop it in directly.
+
+**Step 4: Flag implementation notes**
+
+After the code, output:
+```
+IMPLEMENTATION NOTES
+  File to modify:    [path/to/component.tsx]
+  Flag key:          [from B3 setup block]
+  Control:           [description of current state — no change needed]
+  Variant:           [description of what changes]
+  Events to verify:  [list goal event + any new events that need tracking]
+  Corner cases:      [mobile behavior, empty states, error states to test]
+```
+
+**If the PM hasn't shared the codebase:**
+
+Ask: "To vibe code the variant, I need access to your codebase. Can you share the path to the component or page being tested, and your design token file?"
+
+Do not generate generic code. The whole point of vibe experimentation is that the variant is built on the actual design system.
 
 ---
 

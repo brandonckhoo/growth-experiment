@@ -20,8 +20,14 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 - Recommends a statistical method (Sequential, T-test, or Bayesian) with a specific justification for your experiment, not a generic definition
 - Outputs a complete Amplitude Experiment setup block: Name, Target URL, Key, Hypothesis, Pages, Metrics, Targeting, CUPED, Bonferroni, Statistical Method, Confidence Level
 
-**Phase 4: Approval and Launch**
-- Pauses and asks you to review the proposal before touching Amplitude
+**Phase 4: Vibe Code the Variant**
+- Reads your codebase and design system (Figma tokens, component library, existing patterns) to understand how your product is built
+- Generates the variant code using your actual components, colors, and typography — not a generic prototype
+- Outputs the implementation behind a feature flag, ready to drop into the existing page
+- Follows Akash's Stack 2: vibe code connected to your repo, then experiment
+
+**Phase 5: Approval and Launch**
+- Pauses and asks you to review the proposal and variant code before touching Amplitude
 - On your approval: calls `create_experiment` via the Amplitude MCP, no manual UI work needed
 - Surfaces the direct experiment URL so you can open it and click Launch in one step
 - If MCP is not connected: outputs the setup block for you to copy in manually instead
