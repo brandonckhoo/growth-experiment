@@ -27,8 +27,8 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 - Outputs the implementation behind a feature flag, ready to drop into the existing page
 
 **Phase 5: Experiment Proposal**
-- Writes a full [Atlassian-structured experiment brief](https://www.atlassian.com/team-playbook/plays/experiment): hypothesis, success metric, guardrail metrics, and variant descriptions that reference the code you just built
-- Calculates sample size using the [Optimizely calculator method](https://www.optimizely.com/sample-size-calculator/) and converts it into weeks of runtime based on your traffic
+- Writes a full [Atlassian-structured experiment brief](https://www.atlassian.com/software/confluence/templates/experiment-plan-and-results): hypothesis, success metric, guardrail metrics, and variant descriptions that reference the code you just built
+- Calculates sample size using the [Optimizely calculator method](https://www.optimizely.com/sample-size-calculator/?conversion=3&effect=20&significance=95#/?conversion=3&effect=20&significance=95) and converts it into weeks of runtime based on your traffic
 - Recommends a statistical method (Sequential, T-test, or Bayesian) with a specific justification for your experiment, not a generic definition
 - Outputs a complete Amplitude Experiment setup block: Name, Target URL, Key, Hypothesis, Pages, Metrics, Targeting, CUPED, Bonferroni, Statistical Method, Confidence Level
 
@@ -91,8 +91,8 @@ Growth PMs who use Amplitude Experiment for A/B testing and want to run rigorous
 
 - **[Akash Gupta's experiment bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search)**: 100 named experiment ideas across 10 journey stages and 10 behavioral triggers, used here as a structured idea generation tool
 - **4-factor prioritization**: Expected Impact, Statistical Power Required, Brand/UX Risk, Learning Value — each scored and explained, not just listed
-- **[Atlassian Experiment Plan template](https://www.atlassian.com/team-playbook/plays/experiment)**: hypothesis, primary metric, guardrail metrics, variant descriptions, all in one structured brief
-- **[Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/) method**: n ≈ 16 × p(1−p) / δ², with runtime calculated in weeks based on your actual traffic
+- **[Atlassian Experiment Plan template](https://www.atlassian.com/software/confluence/templates/experiment-plan-and-results)**: hypothesis, primary metric, guardrail metrics, variant descriptions, all in one structured brief
+- **[Optimizely sample size calculator](https://www.optimizely.com/sample-size-calculator/?conversion=3&effect=20&significance=95#/?conversion=3&effect=20&significance=95) method**: n ≈ 16 × p(1−p) / δ², with runtime calculated in weeks based on your actual traffic
 
 ## Requirements
 

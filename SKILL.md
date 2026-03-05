@@ -1107,7 +1107,7 @@ Always output this section. If the PM hasn't provided baseline data, flag what t
 
 **In practice: use a sample size calculator.**
 
-The standard tool is the Optimizely Sample Size Calculator (optimizely.com/sample-size-calculator). You enter 3 inputs and it gives you sample size per variant — no manual math required.
+The standard tool is the Optimizely Sample Size Calculator (optimizely.com/sample-size-calculator/?conversion=3&effect=20&significance=95). You enter 3 inputs and it gives you sample size per variant — no manual math required.
 
 ```
 INPUT 1 — Baseline conversion rate
