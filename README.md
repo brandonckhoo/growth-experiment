@@ -5,8 +5,8 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 ## What it does
 
 **Phase 1: Idea Generation**
-- Reads your problem and identifies the affected user journey stage
-- Looks up that row in [Akash Gupta's 10×10 matrix](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search) — 100 named experiment ideas across 10 journey stages and 10 psychological triggers
+- Reads your problem and identifies which of the 10 user journey stages is affected (Awareness, Onboarding, First Use, Activation, Habit Formation, Monetization, Retention, Referral, Re-engagement, or Expansion)
+- Cross-references that stage against 10 behavioral triggers — Social Proof, Urgency, Loss Aversion, Reciprocity, Curiosity, Commitment, Authority, Personalization, Progress, and Reward — to pull relevant experiment ideas from [Akash Gupta's idea bank](https://www.news.aakashg.com/p/vibe-experimentation?utm_source=publication-search). For example: Awareness stage + Social Proof trigger surfaces ideas like showing customer logos, live user counts, or press mentions
 - Surfaces the top 3 ideas most relevant to your context, frontend-ready and feasible to ship fast
 
 **Phase 2: Prioritization**
@@ -19,11 +19,11 @@ A Claude Code skill for Growth PMs. Give it a problem — a metric drop, a funne
 - Uses Akash's formula: specific user segment + specific behavioral change + specific mechanism + psychological reasoning
 - Turns a vague intuition into a testable claim that anchors the variant, the proposal, and the success metrics
 
-**Phase 4: Vibe Code the Variant**
+**Phase 4: Vibe Code the #1 Idea — 3 Design Concepts**
 - Reads your codebase and design system (Figma tokens, component library, existing patterns) to understand how your product is built
-- Generates the variant code using your actual components, colors, and typography — not a generic prototype
+- Proposes 3 distinct design directions for the #1 idea — each tests the same behavioral hypothesis through a different implementation approach
+- You pick one, then the skill generates the full variant code using your actual components, colors, and typography — not a generic prototype
 - Outputs the implementation behind a feature flag, ready to drop into the existing page
-- Follows Akash's Stack 2: vibe code connected to your repo, then experiment
 
 **Phase 5: Experiment Proposal**
 - Writes a full [Atlassian-structured experiment brief](https://www.atlassian.com/team-playbook/plays/experiment): hypothesis, success metric, guardrail metrics, and variant descriptions that reference the code you just built

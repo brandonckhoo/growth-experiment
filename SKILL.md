@@ -60,11 +60,12 @@ If Amplitude MCP is NOT available:
 4. Example: "New B2B users will complete trial setup 40% faster if they see ROI calculations before the payment step, because they need to justify the purchase to their manager before committing"
 5. This is the testable claim the experiment will prove or disprove — everything downstream anchors to it
 
-**PHASE 3 — VIBE CODE THE VARIANT**
+**PHASE 3 — VIBE CODE THE #1 IDEA — 3 DESIGN CONCEPTS**
 6. Read the relevant page/component in the codebase to understand how it's built
 7. Identify design tokens, component library patterns, and existing styles
-8. Generate the variant code using those actual components — not a generic prototype
-9. Output the implementation wrapped in a feature flag check, ready to drop in
+8. Propose 3 brief design directions — each tests the same behavioral hypothesis through a different implementation approach
+9. PM picks one direction, then generate the full variant code using those actual components — not a generic prototype
+10. Output the implementation wrapped in a feature flag check, ready to drop in
 
 **PHASE 4 — EXPERIMENT PROPOSAL**
 10. Full Atlassian-structured experiment proposal for the #1 idea (hypothesis, metrics, variants, risks) — variant description references the code you just built
@@ -849,9 +850,36 @@ Use Glob and Read to find and open the component or page being tested. Look for:
 
 Do not assume the stack. Read the actual files to confirm the framework (React, Vue, Next.js, etc.), styling approach (Tailwind, CSS modules, styled-components), and component patterns in use.
 
-**Step 2: Understand the design system**
+**Step 2: Propose 3 design concepts**
 
-Before writing any code, identify:
+Before writing any code, propose 3 brief design directions for the #1 idea. Each should test the same behavioral hypothesis from Section H through a different implementation approach. Format:
+
+```
+DESIGN CONCEPTS — [Experiment Idea Name]
+
+Concept A — [Name]:
+  What changes:   [1 sentence description of the UI change]
+  Why it works:   [the behavioral angle this tests]
+  Risk level:     [Low / Med / High]
+
+Concept B — [Name]:
+  What changes:   [1 sentence description]
+  Why it works:   [behavioral angle]
+  Risk level:     [Low / Med / High]
+
+Concept C — [Name]:
+  What changes:   [1 sentence description]
+  Why it works:   [behavioral angle]
+  Risk level:     [Low / Med / High]
+
+Which concept do you want to build? (A / B / C)
+```
+
+Wait for the PM to pick one before generating any code.
+
+**Step 3: Understand the design system**
+
+After the PM picks a concept, identify:
 ```
 Framework:      [React / Vue / Next.js / etc.]
 Styling:        [Tailwind / CSS modules / styled-components / etc.]
@@ -862,7 +890,7 @@ Key components: [Button, Card, Badge, Modal — whatever exists in the codebase]
 
 Use these exact tokens and components in the variant. The experiment must look native to the product, not like a prototype.
 
-**Step 3: Generate the variant code**
+**Step 4: Generate the variant code**
 
 Write the variant implementation. Follow these rules:
 
@@ -881,7 +909,7 @@ return isVariant ? <VariantComponent /> : <ControlComponent />
 
 4. **Output the full modified file** (or the relevant section with clear comments showing where it fits) so the PM or engineer can drop it in directly.
 
-**Step 4: Flag implementation notes**
+**Step 5: Flag implementation notes**
 
 After the code, output:
 ```
