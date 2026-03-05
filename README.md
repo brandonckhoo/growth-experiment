@@ -100,6 +100,10 @@ Growth PMs who use Amplitude Experiment for A/B testing and want to run rigorous
 - Amplitude Experiment account with experiments enabled
 - A problem to solve
 
+**Optional (upgrades the skill):**
+- [Amplitude MCP](https://amplitude.com/mcp-server) — pulls baseline data from Amplitude and creates the experiment without touching the UI
+- [Figma MCP](https://www.figma.com/developers/mcp) — reads your design tokens and component specs directly for on-brand variant code; without it the skill falls back to reading your codebase or live site URL
+
 ## Amplitude MCP integration
 
 If you have the [Amplitude MCP server](https://amplitude.com/mcp-server) connected to Claude Code, the skill upgrades automatically:
